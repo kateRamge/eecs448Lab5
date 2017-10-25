@@ -1,13 +1,24 @@
 <?php
-$mysqlUsers = new mysqli("mysql.eecs.ku.edu", "kramge", 'P@$$word123', "Users");
+//https://stackoverflow.com/questions/11292468/how-to-check-if-value-exists-in-a-mysql-database
+$servername = 'mysql.eecs.ku.edu';
+$username = 'kramge';
+$password = 'P@$$word123';
+$database = 'kramge';
+$mysqlUsers = new mysqli($servername, $username, $password, $database);
 $userAuthorID = $_POST["userName"];
 
 if($mysqlUsers->connect_error) {
-  die("Connection failedL " . $mysqlUsers->connect_error);
+  die("Connection failed " . $mysqlUsers->connect_error);
 }
-if($mysqlUsers->query("SELECT user_id FROM Users WHERE user_id = " . $userAuthorID)->num_rows == 0) {
+
+$sql = "SELECT user_id FROM Users WHERE user_id = " . $userAuthorID;
+$result = mysqli_query($mysqlUsers, $sql);
+$sqlins = "INSERT INTO Users (user_id) VALUES (" . $userAuthorID . ")"; 
+$resultins = mysqli_query($mysqlUsers, $sqlins);
+
+if($result->num_rows == 0) {
   //new user
-  if($mysqlUsers->query("INSERT INTO Users (" . $userAuthorID . ")") === TRUE) {
+  if($resultins) {
     echo "You have successfully created a new user.<br>";
   }
   else {
