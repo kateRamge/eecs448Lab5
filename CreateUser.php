@@ -11,12 +11,11 @@ if($mysqlUsers->connect_error) {
   die("Connection failed " . $mysqlUsers->connect_error);
 }
 
-$sql = "SELECT user_id FROM Users WHERE user_id = " . $userAuthorID;
+$sql = "SELECT * FROM Users WHERE user_id = '$userAuthorID'";
 $result = mysqli_query($mysqlUsers, $sql);
-$sqlins = "INSERT INTO Users (user_id) VALUES (" . $userAuthorID . ")"; 
+$sqlins = "INSERT INTO Users (user_id) VALUES ('$userAuthorID')";
 $resultins = mysqli_query($mysqlUsers, $sqlins);
-
-if($result->num_rows == 0) {
+if(mysqli_num_rows($result) == 0) {
   //new user
   if($resultins) {
     echo "You have successfully created a new user.<br>";
