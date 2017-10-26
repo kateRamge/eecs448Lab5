@@ -1,22 +1,26 @@
 <?php
-$mysqlPosts = new mysqli("mysql.eecs.ku.edu", "kramge", 'P@$$word123', "Posts");
-$mysqlUsers = new mysqli("mysql.eecs.ku.edu", "kramge", 'P@$$word123', "Users");
+$servername = 'mysql.eecs.ku.edu';
+$username = 'kramge';
+$password = 'P@$$word123';
+$database = 'kramge';
+$mysqlUsers = new mysqli($servername, $username, $password, $database);
 $userAuthorID = $_POST["userName"];
 $userPost = $_POST["postContent"];
 
-if($mysqlPosts->connect_error) {
-  die("Connection failedL " . $mysqlPosts->connect_error);
-}
 if($mysqlUsers->connect_error) {
-  die("Connection failedL " . $mysqlUsers->connect_error);
+  die("Connection failed " . $mysqlUsers->connect_error);
 }
-
-if($mysqlUsers->query("SELECT user_id FROM Users WHERE user_id = " . $userAuthorID)->num_rows == 0) {
+$sql = "SELECT * FROM Users WHERE user_id = '$userAuthorID'";
+$result = mysqli_query($mysqlUsers, $sql);
+$addingPost = "INSERT INTO Posts (content, author_id) VALUES ('$userPost', '$userAuthorID')";
+$addPostRes = mysqli_query($mysqlUsers, $addingPost);
+if(mysqli_num_rows($result) == 0) {
   //new user
+  echo "You are not a registered user.<br>";
 }
 else {
   //existing user
-  if($mysqlPosts->query("INSERT INTO Posts (" . $usersPost . "," . $userAuthorID . ")") === TRUE) {
+  if($addPostRes) {
     echo "You have successfully made a post.<br>";
   }
   else {
